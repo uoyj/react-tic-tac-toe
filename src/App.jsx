@@ -32,25 +32,28 @@ function Board({ xIsNext, squareList, onPlay }) {
     
     onPlay(nextSquares)
   }
-  
+
+  const boardSquares = Array(3).fill(null).map((row, i) => {
+      return (
+        <div className="board-row" key={i}>
+          {
+            Array(3).fill(null).map((square, j) => {
+                const index = i*3 + j
+                return (
+                  <Square value={squareList[index]} onSquareClick={() => handleClick(index)} key={index}/>
+                )
+              }
+            )
+          }
+        </div>
+      )
+    }
+  ) //end boardSquares
+    
   return (
     <>
       <div className="status">{statusMessage}</div>
-      <div className="board-row">
-        <Square value={squareList[0]} onSquareClick={() => handleClick(0)}/>
-        <Square value={squareList[1]} onSquareClick={() => handleClick(1)}/>
-        <Square value={squareList[2]} onSquareClick={() => handleClick(2)}/>
-      </div>
-      <div className="board-row">
-        <Square value={squareList[3]} onSquareClick={() => handleClick(3)}/>
-        <Square value={squareList[4]} onSquareClick={() => handleClick(4)}/>
-        <Square value={squareList[5]} onSquareClick={() => handleClick(5)}/>
-      </div>
-      <div className="board-row">
-        <Square value={squareList[6]} onSquareClick={() => handleClick(6)}/>
-        <Square value={squareList[7]} onSquareClick={() => handleClick(7)}/>
-        <Square value={squareList[8]} onSquareClick={() => handleClick(8)}/>
-      </div>
+      {boardSquares}
     </>
   )
 }
@@ -101,17 +104,25 @@ function App(){
 
   const moves = history.map((squareList, index) => {
     let description;
+    if (index == history.length-1) 
+      return (
+        <li key={index}>
+          You are at move #  {index};
+        </li>
+      )
+    
     if (index > 0) {
-      description = 'Go to move #' + index;
+      description = 'Go to move #' + index
     } else {
-      description = 'Go to game start';
+      description = 'Go to game start'
     }
-    return (
+
+        return (
       <li key={index}>
         <button onClick={() => jumpTo(index)}>{description}</button>
       </li>
-    );
-  });
+    )
+  })
 
   return (
     <div className="game">
