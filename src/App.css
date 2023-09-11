@@ -23,3 +23,12 @@
   background-color: silver;
   cursor: pointer;
 }
+
+.game{
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info{
+  margin-left: 1em;
+}
