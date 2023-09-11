@@ -90,6 +90,8 @@ function App(){
   const [history, setHistory] = useState([Array(9).fill(null)])
   const [currentMove, setCurrentMove] = useState(0)
   const currentSquares = history[currentMove]
+  const [historySortAscend, setHistorySortAscend] = useState(true)
+  let historySortClass = "ascend"
   const xIsNext = currentMove % 2 === 0
 
   function handlePlay(nextSquares){
@@ -102,8 +104,11 @@ function App(){
     setCurrentMove(nextMove);
   }
 
+  function handleHistorySort(){
+    setHistorySortAscend(prev => !prev);
+  }
+
   const moves = history.map((squareList, index) => {
-    let description;
     if (index == history.length-1) 
       return (
         <li key={index}>
@@ -111,18 +116,32 @@ function App(){
         </li>
       )
     
+    let description;
+
     if (index > 0) {
       description = 'Go to move #' + index
     } else {
       description = 'Go to game start'
     }
 
-        return (
+    return (
       <li key={index}>
         <button onClick={() => jumpTo(index)}>{description}</button>
       </li>
     )
-  })
+  }) //end moves
+
+  if(historySortAscend) historySortClass = "ascend"
+  else{
+    moves.reverse()
+    historySortClass = "descend"
+  } 
+
+  const historySort = (
+    <li className={"game-info-controls__sort-"+historySortClass}>
+      <button onClick={() => handleHistorySort()}>Sort Moves History</button>
+    </li>
+  )
 
   return (
     <div className="game">
@@ -130,7 +149,8 @@ function App(){
         <Board xIsNext={xIsNext} squareList={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        <ol>
+        <ol className="game-info-controls">
+          {historySort}
           {moves}
         </ol>
       </div>

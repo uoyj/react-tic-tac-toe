@@ -32,3 +32,15 @@
 .game-info{
   margin-left: 1em;
 }
+
+.game-info-controls{
+  list-style-type: circle;
+}
+
+.game-info-controls__sort-descend{
+  list-style-type: disclosure-open;
+}
+
+.game-info-controls__sort-ascend{
+  list-style-type: disclosure-closed;
+}
