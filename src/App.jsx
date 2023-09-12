@@ -2,21 +2,27 @@ import { PropTypes } from 'prop-types'
 import { useState } from 'react'
 import './App.css'
 
-function Square({ value, onSquareClick }){
+function Square({ value, onSquareClick, isInTriad }){
+  function triadClass(){
+    if(isInTriad) return " triad"
+    else return ""
+  }
+
   return(
-    <button className="square" onClick={onSquareClick}>
+    <button className={"square" + triadClass()} onClick={onSquareClick}>
       {value}
     </button>
   )
 }
 Square.propTypes = {
   value: PropTypes.string,
-  onSquareClick: PropTypes.func
+  onSquareClick: PropTypes.func,
+  isInTriad: PropTypes.bool
 }
 
 function Board({ xIsNext, squareList, onPlay }) {
   
-  let winner = winnerCalculation(squareList)
+  let [winner, triad] = winnerCalculation(squareList)
   let statusMessage = ""
 
   if(winner) statusMessage = winner + " wins!"
@@ -33,6 +39,10 @@ function Board({ xIsNext, squareList, onPlay }) {
     onPlay(nextSquares)
   }
 
+  function triadTest(index){
+    return triad.indexOf(index) > -1
+  }
+
   const boardSquares = Array(3).fill(null).map((row, i) => {
       return (
         <div className="board-row" key={i}>
@@ -40,7 +50,7 @@ function Board({ xIsNext, squareList, onPlay }) {
             Array(3).fill(null).map((square, j) => {
                 const index = i*3 + j
                 return (
-                  <Square value={squareList[index]} onSquareClick={() => handleClick(index)} key={index}/>
+                  <Square value={squareList[index]} onSquareClick={() => handleClick(index)}  isInTriad={triadTest(index)} key={index} />
                 )
               }
             )
@@ -49,7 +59,7 @@ function Board({ xIsNext, squareList, onPlay }) {
       )
     }
   ) //end boardSquares
-    
+  
   return (
     <>
       <div className="status">{statusMessage}</div>
@@ -64,6 +74,7 @@ Board.propTypes = {
 }
 
 function winnerCalculation(squareList){
+
   const combinationList = [
     [0, 1, 2],
     [3, 4, 5],
@@ -78,10 +89,10 @@ function winnerCalculation(squareList){
   for (let i = 0; i < combinationList.length; i++) {
     const [a, b, c] = combinationList[i];
     if (squareList[a] && squareList[a] === squareList[b] && squareList[a] === squareList[c]) {
-      return squareList[a];
+      return [squareList[a], [a,b,c]];
     }
   }
-  return null;
+  return [null,[]];
 
 }
 
